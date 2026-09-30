@@ -137,8 +137,8 @@ REST API dùng HTTP Basic, ví dụ `curl -u admin:admin123 ...`. Quyền USER c
 | GET/POST/PUT/DELETE | `/api/employees[/{id}]` | CRUD |
 | GET/POST/PUT/DELETE | `/api/departments[/{id}]` | CRUD phòng ban |
 | GET | `/api/statistics` | Thống kê |
-| GET | `/actuator/health`, `/actuator/info` | Công khai |
-| GET | `/actuator/metrics/ems.employees.created` | Cần quyền ADMIN |
+| GET | `/actuator/health` | Công khai |
+| GET | `/actuator/info`, `/actuator/metrics/ems.employees.created` | Cần quyền ADMIN |
 
 Giao diện web: `/employees/list`, `/employees/search`, `/employees/add`, `/employees/{id}/edit`, `/statistics`, `/login`, `/register`.
 

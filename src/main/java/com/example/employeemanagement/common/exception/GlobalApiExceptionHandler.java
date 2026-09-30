@@ -111,7 +111,8 @@ public class GlobalApiExceptionHandler {
     /** E.g. two concurrent requests both pass the pre-check (existsByEmailIgnoreCase) and one hits the unique constraint. */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
-        log.warn("Data integrity violation at {} {}: {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
+        log.warn("Data integrity violation at {} {}: {}", request.getMethod(), request.getRequestURI(),
+                ex.getMostSpecificCause().getClass().getSimpleName());
         return build(ErrorCode.CONFLICT, "Dữ liệu bị trùng hoặc vi phạm ràng buộc", request, null);
     }
 

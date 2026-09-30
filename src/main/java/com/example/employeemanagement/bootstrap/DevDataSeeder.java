@@ -79,13 +79,11 @@ public class DevDataSeeder implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        log.warn("Profile 'dev' active: seeding well-known accounts (admin/admin123, user/user123). "
-                + "Never run this profile against a real/shared database.");
-        if (!userService.exists("admin")) {
-            userService.createUser("admin", "admin123", "Quản trị viên", Role.ADMIN);
-        }
-        if (!userService.exists("user")) {
-            userService.createUser("user", "user123", "Người dùng", Role.USER);
+        boolean seededAdmin = seedIfMissing("admin", "admin123", "Quản trị viên", Role.ADMIN);
+        boolean seededUser = seedIfMissing("user", "user123", "Người dùng", Role.USER);
+        if (seededAdmin || seededUser) {
+            log.warn("Profile 'dev' active: seeded well-known account(s) (admin/admin123, user/user123). "
+                    + "Never run this profile against a real/shared database.");
         }
         if (employeeRepository.count() > 0) {
             return;
@@ -112,5 +110,14 @@ public class DevDataSeeder implements ApplicationRunner {
             employeeService.create(request);
         }
         log.info("Seeded {} departments and {} employees", DEPARTMENTS.length, EMPLOYEES.length);
+    }
+
+    /** Creates the account if missing; returns true iff a new account was actually created. */
+    private boolean seedIfMissing(String username, String rawPassword, String fullName, Role role) {
+        if (userService.exists(username)) {
+            return false;
+        }
+        userService.createUser(username, rawPassword, fullName, role);
+        return true;
     }
 }

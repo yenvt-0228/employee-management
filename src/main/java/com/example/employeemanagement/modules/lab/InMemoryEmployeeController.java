@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ public class InMemoryEmployeeController {
 
     private final Map<Long, InMemoryEmployee> store = new ConcurrentHashMap<>();
     private final AtomicLong sequence = new AtomicLong();
+    // Reserves a slot atomically before insert; store.size() alone would race under concurrent POSTs.
+    private final AtomicInteger size = new AtomicInteger();
     private final UtilityService utilityService;
 
     public InMemoryEmployeeController(UtilityService utilityService) {
@@ -62,10 +65,15 @@ public class InMemoryEmployeeController {
         if (!StringUtils.hasText(employee.getName())) {
             return ResponseEntity.badRequest().body(Map.of("message", "name không được để trống"));
         }
-        if (store.size() >= MAX_ITEMS) {
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-                    .body(Map.of("message", "Demo Lab 3 đã đạt giới hạn " + MAX_ITEMS + " bản ghi"));
-        }
+        // Atomically reserve a slot: only one concurrent caller can push the count past MAX_ITEMS.
+        int reserved;
+        do {
+            reserved = size.get();
+            if (reserved >= MAX_ITEMS) {
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                        .body(Map.of("message", "Demo Lab 3 đã đạt giới hạn " + MAX_ITEMS + " bản ghi"));
+            }
+        } while (!size.compareAndSet(reserved, reserved + 1));
 
         long id = sequence.incrementAndGet();
         employee.setId(id);

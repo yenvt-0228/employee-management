@@ -66,6 +66,10 @@ public class SecurityConfig {
                         .permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
                 .httpBasic(Customizer.withDefaults())
+                // H2 console is its own bundled webapp; it doesn't render Spring Security's CSRF
+                // token, so CSRF must stay off for it or every action inside it 403s. Residual risk
+                // (CSRF-riding an already-logged-in ADMIN session) is accepted: the console is only
+                // enabled at all under the dev profile (application-dev.yml), never in prod.
                 .csrf(csrf -> csrf.ignoringRequestMatchers(h2Console))
                 .headers(headers -> headers.frameOptions().sameOrigin());
         return http.build();
