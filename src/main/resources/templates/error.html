@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Lỗi')}"></head>
+<body>
+<main class="container text-center py-5">
+    <div class="display-4 fw-bold text-muted" th:text="${status}">500</div>
+    <h1 class="h4" th:switch="${status}">
+        <span th:case="403">Bạn không có quyền truy cập trang này</span>
+        <span th:case="404">Không tìm thấy trang</span>
+        <span th:case="*">Đã có lỗi xảy ra</span>
+    </h1>
+    <a th:href="@{/}" class="btn btn-primary mt-3">Về trang chủ</a>
+</main>
+</body>
+</html>

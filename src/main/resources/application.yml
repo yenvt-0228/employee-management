@@ -1,0 +1,43 @@
+# Cấu hình chung cho mọi môi trường. Profile mặc định: dev (đổi bằng SPRING_PROFILES_ACTIVE=prod).
+spring:
+  application:
+    name: employee-management
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  jpa:
+    open-in-view: false
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+server:
+  port: ${PORT:8080}
+
+# Lab 8: Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers
+  endpoint:
+    health:
+      show-details: when_authorized
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Employee Management System
+    version: '@project.version@'
+
+app:
+  scheduler:
+    # giây phút giờ ngày tháng thứ — mặc định 8h sáng mỗi ngày
+    report-cron: "0 0 8 * * *"
+  admin:
+    username: ${APP_ADMIN_USERNAME:}
+    password: ${APP_ADMIN_PASSWORD:}

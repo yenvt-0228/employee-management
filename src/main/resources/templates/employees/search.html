@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Tìm kiếm nhân viên')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container">
+    <h1 class="h3 mb-3">Tìm kiếm nhân viên</h1>
+    <div class="card mb-3">
+        <div class="card-body">
+            <form th:action="@{/employees/search}" method="get" class="row g-2 align-items-end">
+                <div class="col-md-5">
+                    <label for="name" class="form-label">Tên nhân viên</label>
+                    <input type="text" id="name" name="name" class="form-control" th:value="${name}"
+                           placeholder="Nhập một phần tên...">
+                </div>
+                <div class="col-md-4">
+                    <label for="departmentId" class="form-label">Phòng ban</label>
+                    <select id="departmentId" name="departmentId" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option th:each="d : ${departments}" th:value="${d.id}" th:text="${d.name}"
+                                th:selected="${d.id == departmentId}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-fill">Tìm kiếm</button>
+                    <a th:href="@{/employees/search}" class="btn btn-outline-secondary">Xoá lọc</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card" th:if="${page != null}">
+        <div class="card-body">
+            <p class="text-muted mb-2" th:text="|Tìm thấy ${page.totalElements} nhân viên|"></p>
+            <div th:replace="~{employees/table :: table(${page.content})}"></div>
+            <div class="mt-3" th:insert="~{fragments/pagination :: pager(${page}, ${pageUrl})}"></div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
