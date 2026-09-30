@@ -55,9 +55,9 @@ public class SecurityConfig {
         AntPathRequestMatcher h2Console = new AntPathRequestMatcher("/h2-console/**");
         http.authorizeHttpRequests(auth -> auth
                         .antMatchers("/hello", "/login", "/register", "/error", "/css/**", "/js/**").permitAll()
-                        .antMatchers("/actuator/health/**", "/actuator/info").permitAll()
-                        .requestMatchers(h2Console).permitAll()
-                        .antMatchers("/employees/add", "/employees/*/edit", "/employees/*/delete").hasRole("ADMIN")
+                        .antMatchers("/actuator/health/**").permitAll()
+                        .requestMatchers(h2Console).hasRole("ADMIN")
+                        .mvcMatchers("/employees/add", "/employees/*/edit", "/employees/*/delete").hasRole("ADMIN")
                         .antMatchers("/actuator/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form

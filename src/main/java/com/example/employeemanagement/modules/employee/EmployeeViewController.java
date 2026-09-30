@@ -5,6 +5,7 @@ import com.example.employeemanagement.common.exception.ConflictException;
 import com.example.employeemanagement.modules.department.DepartmentService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -63,12 +64,16 @@ public class EmployeeViewController {
         return "employees/search";
     }
 
+    // Method-level guard: closes URL-matching bypasses (e.g. a trailing slash) that could
+    // slip past the path patterns in SecurityConfig, since @EnableMethodSecurity is already on.
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("employee", new EmployeeRequest());
         return prepareForm(model, null);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public String add(@Valid @ModelAttribute("employee") EmployeeRequest request, BindingResult bindingResult,
                       Model model, RedirectAttributes redirectAttributes) {
@@ -86,12 +91,14 @@ public class EmployeeViewController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
         model.addAttribute("employee", employeeService.getFormData(id));
         return prepareForm(model, id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/edit")
     public String edit(@PathVariable Long id, @Valid @ModelAttribute("employee") EmployeeRequest request,
                        BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
@@ -108,6 +115,7 @@ public class EmployeeViewController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         employeeService.delete(id);

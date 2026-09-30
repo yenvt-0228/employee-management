@@ -7,9 +7,11 @@ Mini project học Spring Boot: quản lý nhân viên, đăng ký/đăng nhập
 ## Chạy nhanh
 
 ```bash
-./mvnw spring-boot:run          # profile dev, H2 in-memory, có sẵn dữ liệu mẫu
-./mvnw test                     # chạy test
+SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run   # profile dev, H2 in-memory, có sẵn dữ liệu mẫu
+./mvnw test                                          # chạy test
 ```
+
+Không có profile mặc định (cố ý, xem PR review): quên set `SPRING_PROFILES_ACTIVE` khi deploy sẽ không vô tình chạy dev với tài khoản `admin/admin123` công khai.
 
 Mở http://localhost:8080 và đăng nhập bằng một trong hai tài khoản mẫu (chỉ có ở profile dev):
 

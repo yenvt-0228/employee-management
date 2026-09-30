@@ -1,9 +1,11 @@
-# Cấu hình chung cho mọi môi trường. Profile mặc định: dev (đổi bằng SPRING_PROFILES_ACTIVE=prod).
+# Cấu hình chung cho mọi môi trường.
+# Không có profile mặc định (cố ý): nếu quên set SPRING_PROFILES_ACTIVE khi deploy, app sẽ
+# không tự ý chạy với dữ liệu mẫu/tài khoản admin-admin123 công khai của profile dev.
 spring:
   application:
     name: employee-management
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: ${SPRING_PROFILES_ACTIVE:}
   jpa:
     open-in-view: false
   data:

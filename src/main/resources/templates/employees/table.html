@@ -28,7 +28,7 @@
             <td sec:authorize="hasRole('ADMIN')" class="text-end text-nowrap">
                 <a class="btn btn-sm btn-outline-primary" th:href="@{/employees/{id}/edit(id=${e.id})}">Sửa</a>
                 <form th:action="@{/employees/{id}/delete(id=${e.id})}" method="post" class="d-inline"
-                      th:attr="onsubmit=|return confirm('Xoá nhân viên ${e.name}?')|">
+                      th:data-name="${e.name}" onsubmit="return confirm('Xoá nhân viên ' + this.dataset.name + '?')">
                     <button type="submit" class="btn btn-sm btn-outline-danger">Xoá</button>
                 </form>
             </td>

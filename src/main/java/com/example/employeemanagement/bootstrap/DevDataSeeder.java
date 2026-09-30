@@ -79,6 +79,8 @@ public class DevDataSeeder implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        log.warn("Profile 'dev' active: seeding well-known accounts (admin/admin123, user/user123). "
+                + "Never run this profile against a real/shared database.");
         if (!userService.exists("admin")) {
             userService.createUser("admin", "admin123", "Quản trị viên", Role.ADMIN);
         }

@@ -1,7 +1,9 @@
 package com.example.employeemanagement.modules.lab;
 
 import com.example.employeemanagement.common.util.UtilityService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,10 +21,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-
+/**
+ * No login required by design (see README), so writes here must stay safe on their own:
+ * basic validation plus a hard cap on the in-memory store to avoid unbounded heap growth.
+ */
 @RestController
 @RequestMapping("/api/lab3/employees")
 public class InMemoryEmployeeController {
+
+    private static final int MAX_ITEMS = 1000;
 
     private final Map<Long, InMemoryEmployee> store = new ConcurrentHashMap<>();
     private final AtomicLong sequence = new AtomicLong();
@@ -51,7 +58,15 @@ public class InMemoryEmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<InMemoryEmployee> create(@RequestBody InMemoryEmployee employee) {
+    public ResponseEntity<?> create(@RequestBody InMemoryEmployee employee) {
+        if (!StringUtils.hasText(employee.getName())) {
+            return ResponseEntity.badRequest().body(Map.of("message", "name không được để trống"));
+        }
+        if (store.size() >= MAX_ITEMS) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of("message", "Demo Lab 3 đã đạt giới hạn " + MAX_ITEMS + " bản ghi"));
+        }
+
         long id = sequence.incrementAndGet();
         employee.setId(id);
         employee.setCode(utilityService.generateEmployeeCode(id));
