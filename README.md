@@ -7,9 +7,11 @@ Mini project học Spring Boot: quản lý nhân viên, đăng ký/đăng nhập
 ## Chạy nhanh
 
 ```bash
-./mvnw spring-boot:run          # profile dev, H2 in-memory, có sẵn dữ liệu mẫu
-./mvnw test                     # chạy test
+SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run   # profile dev, H2 in-memory, có sẵn dữ liệu mẫu
+./mvnw test                                          # chạy test
 ```
+
+Không có profile mặc định (cố ý, xem PR review): quên set `SPRING_PROFILES_ACTIVE` khi deploy sẽ không vô tình chạy dev với tài khoản `admin/admin123` công khai.
 
 Mở http://localhost:8080 và đăng nhập bằng một trong hai tài khoản mẫu (chỉ có ở profile dev):
 
@@ -135,8 +137,8 @@ REST API dùng HTTP Basic, ví dụ `curl -u admin:admin123 ...`. Quyền USER c
 | GET/POST/PUT/DELETE | `/api/employees[/{id}]` | CRUD |
 | GET/POST/PUT/DELETE | `/api/departments[/{id}]` | CRUD phòng ban |
 | GET | `/api/statistics` | Thống kê |
-| GET | `/actuator/health`, `/actuator/info` | Công khai |
-| GET | `/actuator/metrics/ems.employees.created` | Cần quyền ADMIN |
+| GET | `/actuator/health` | Công khai |
+| GET | `/actuator/info`, `/actuator/metrics/ems.employees.created` | Cần quyền ADMIN |
 
 Giao diện web: `/employees/list`, `/employees/search`, `/employees/add`, `/employees/{id}/edit`, `/statistics`, `/login`, `/register`.
 

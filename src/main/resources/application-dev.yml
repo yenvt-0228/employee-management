@@ -1,0 +1,27 @@
+# Profile dev: H2 in-memory, không cần cài database. Dữ liệu mẫu do DevDataSeeder tạo.
+spring:
+  datasource:
+    url: jdbc:h2:mem:employee_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  thymeleaf:
+    cache: false
+
+logging:
+  level:
+    com.example.employeemanagement: DEBUG
+
+app:
+  scheduler:
+    report-cron: "0 */5 * * * *"

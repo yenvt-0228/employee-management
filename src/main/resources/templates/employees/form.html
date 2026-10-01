@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${employeeId == null} ? 'Thêm nhân viên' : 'Sửa nhân viên')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container" style="max-width: 720px">
+    <h1 class="h3 mb-3" th:text="${employeeId == null} ? 'Thêm nhân viên mới' : |Sửa nhân viên #${employeeId}|"></h1>
+    <div class="card">
+        <div class="card-body">
+            <form th:object="${employee}" method="post" novalidate
+                  th:action="${employeeId == null} ? @{/employees/add} : @{/employees/{id}/edit(id=${employeeId})}">
+
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+                    <p th:each="err : ${#fields.globalErrors()}" th:text="${err}" class="mb-0"></p>
+                </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Họ tên <span class="text-danger">*</span></label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control"
+                           th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{name}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control"
+                           th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{email}"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="position" class="form-label">Chức vụ</label>
+                        <input type="text" id="position" th:field="*{position}" class="form-control"
+                               th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{position}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="hireDate" class="form-label">Ngày vào làm</label>
+                        <input type="date" id="hireDate" th:field="*{hireDate}" class="form-control"
+                               th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{hireDate}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="departmentId" class="form-label">Phòng ban <span class="text-danger">*</span></label>
+                    <select id="departmentId" th:field="*{departmentId}" class="form-select" th:errorclass="is-invalid">
+                        <option value="">-- Chọn phòng ban --</option>
+                        <option th:each="d : ${departments}" th:value="${d.id}" th:text="${d.name}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{departmentId}"></div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <a th:href="@{/employees/list}" class="btn btn-outline-secondary">Huỷ</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
